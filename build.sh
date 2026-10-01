@@ -193,8 +193,8 @@ mpv_platform_flags() {
                 -Dalsa=enabled -Dpulse=enabled -Dpipewire=enabled
             ;;
         macos)
-            echo -Diconv=enabled -Dcocoa=enabled -Dgl-cocoa=enabled \
-                -Dvideotoolbox-gl=enabled -Dcoreaudio=enabled
+            # cocoa needs mpv's Swift build
+            echo -Diconv=enabled -Dcoreaudio=enabled
             ;;
         windows)
             echo -Dwin32-threads=enabled -Dgl-win32=enabled -Dd3d-hwaccel=enabled \
