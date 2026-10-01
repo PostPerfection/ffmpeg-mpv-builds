@@ -1,0 +1,70 @@
+name: Setup FFmpeg and libmpv
+description: Install the LGPL FFmpeg and libmpv from a ffmpeg-mpv-builds release where Rust builds find them. Exports PKG_CONFIG_PATH on Linux and macOS, MPV_LIB_DIR and FFMPEG_DIR on Windows.
+
+inputs:
+  release:
+    description: ffmpeg-mpv-builds release tag to install.
+    required: true
+
+outputs:
+  dir:
+    description: Directory holding include, lib and on Windows bin.
+    value: ${{ steps.install.outputs.dir }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install FFmpeg and libmpv
+      id: install
+      shell: bash
+      env:
+        RELEASE: ${{ inputs.release }}
+        REPOSITORY: PostPerfection/ffmpeg-mpv-builds
+      run: |
+        case "$RUNNER_OS-$RUNNER_ARCH" in
+          Linux-X64) name=ffmpeg-mpv-linux-x86_64 asset=$name.tar.xz ;;
+          macOS-ARM64) name=ffmpeg-mpv-macos-arm64 asset=$name.tar.xz ;;
+          Windows-X64) name=ffmpeg-mpv-windows-x86_64 asset=$name.zip ;;
+          *) echo "setup-ffmpeg-mpv: no archive for $RUNNER_OS $RUNNER_ARCH" >&2; exit 1 ;;
+        esac
+        download="$RUNNER_TEMP/ffmpeg-mpv-download"
+        mkdir -p "$download"
+        cd "$download"
+        base="https://github.com/$REPOSITORY/releases/download/$RELEASE"
+        curl -fsSL --retry 5 --retry-all-errors -o SHA256SUMS "$base/SHA256SUMS"
+        curl -fsSL --retry 5 --retry-all-errors -o "$asset" "$base/$asset"
+        grep "  $asset\$" SHA256SUMS > expected.sha256
+        if [ "$RUNNER_OS" = macOS ]; then shasum -a 256 -c expected.sha256; else sha256sum -c expected.sha256; fi
+
+        if [ "$RUNNER_OS" = Windows ]; then
+          7z x -y -o"$RUNNER_TEMP" "$asset" > /dev/null
+        else
+          tar -C "$RUNNER_TEMP" -xJf "$asset"
+        fi
+        dir="$RUNNER_TEMP/$name"
+
+        case "$RUNNER_OS" in
+          Linux)
+            # the archive carries FFmpeg, mpv and libplacebo, the rest of the closure comes from the system
+            sudo_command=""
+            [ "$(id -u)" = 0 ] || sudo_command=sudo
+            $sudo_command apt-get update
+            xargs $sudo_command apt-get install -y --no-install-recommends < "$dir/ubuntu-24.04-runtime-packages.txt"
+            echo "PKG_CONFIG_PATH=$dir/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
+            echo "LD_LIBRARY_PATH=$dir/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+            ;;
+          macOS)
+            echo "PKG_CONFIG_PATH=$dir/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
+            # the dylibs carry @rpath install names, which DYLD_LIBRARY_PATH also satisfies
+            echo "DYLD_LIBRARY_PATH=$dir/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+            ;;
+          Windows)
+            dir="$(cygpath -m "$dir")"
+            # no pkg-config there: postkit's build.rs reads MPV_LIB_DIR, ffmpeg-sys-next reads FFMPEG_DIR
+            echo "MPV_LIB_DIR=$dir/lib" >> "$GITHUB_ENV"
+            echo "FFMPEG_DIR=$dir" >> "$GITHUB_ENV"
+            cygpath -w "$dir/bin" >> "$GITHUB_PATH"
+            ;;
+        esac
+        echo "FFMPEG_MPV_DIR=$dir" >> "$GITHUB_ENV"
+        echo "dir=$dir" >> "$GITHUB_OUTPUT"

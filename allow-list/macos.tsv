@@ -1,0 +1,25 @@
+# soname	licence	why it is allowed
+# for Homebrew dylibs the licence is the formula's license field, compared verbatim
+libavcodec.62.dylib	LGPL-2.1-or-later	built here from FFmpeg without --enable-gpl, --enable-version3 or --enable-nonfree, the smoke test reads avcodec_license()
+libavdevice.62.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavfilter.11.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavformat.62.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavutil.60.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libswresample.6.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libswscale.9.dylib	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libmpv.2.dylib	LGPL-2.1-or-later	built here from mpv with -Dgpl=false and every optional feature off unless listed, the smoke test reads mpv-configuration
+libplacebo.360.dylib	LGPL-2.1-or-later	built here from libplacebo
+libdav1d.7.dylib	BSD-2-Clause	AV1 decoder for FFmpeg
+libzimg.2.dylib	WTFPL	scaler for FFmpeg zscale and mpv
+liblcms2.2.dylib	MIT	colour management for mpv and libplacebo
+libluajit-5.1.2.dylib	MIT	Lua for mpv, which the osc option the apps set needs
+libass.9.dylib	ISC	subtitle renderer, required by mpv
+libfreetype.6.dylib	FTL	needed by libass
+libpng16.16.dylib	libpng-2.0	needed by freetype
+libfribidi.0.dylib	GPL-2.0-or-later AND LGPL-2.1-or-later	needed by libass, the library is LGPL-2.1-or-later, the GPL term covers the getopt sources of the fribidi command
+libharfbuzz.0.dylib	MIT	needed by libass
+libunibreak.8.dylib	Zlib	needed by libass
+libgraphite2.3.dylib	MIT OR MPL-2.0 OR LGPL-2.1-or-later OR GPL-2.0-or-later	needed by harfbuzz, used under MIT
+libglib-2.0.0.dylib	LGPL-2.1-or-later	needed by harfbuzz
+libpcre2-8.0.dylib	BSD-3-Clause	needed by glib
+libintl.8.dylib	GPL-3.0-or-later AND LGPL-2.1-or-later	needed by glib, libintl is LGPL-2.1-or-later, the GPL term covers the gettext tools, which are not bundled

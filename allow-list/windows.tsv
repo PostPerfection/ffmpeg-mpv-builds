@@ -1,0 +1,35 @@
+# soname	licence	why it is allowed
+# for MSYS2 dlls the licence is the package's Licenses field as pacman -Qi prints it, compared verbatim
+avcodec-62.dll	LGPL-2.1-or-later	built here from FFmpeg without --enable-gpl, --enable-version3 or --enable-nonfree, the smoke test reads avcodec_license()
+avdevice-62.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+avfilter-11.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+avformat-62.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+avutil-60.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+swresample-6.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+swscale-9.dll	LGPL-2.1-or-later	built here from FFmpeg, same configure line as avcodec
+libmpv-2.dll	LGPL-2.1-or-later	built here from mpv with -Dgpl=false and every optional feature off unless listed, the smoke test reads mpv-configuration
+libplacebo-360.dll	LGPL-2.1-or-later	built here from libplacebo
+libdav1d-7.dll	spdx:BSD-2-Clause	AV1 decoder for FFmpeg
+libzimg-2.dll	spdx:WTFPL	scaler for FFmpeg zscale and mpv
+zlib1.dll	spdx:Zlib	zlib for FFmpeg, mpv and freetype
+liblcms2-2.dll	spdx:MIT AND GPL-3.0-or-later	colour management for mpv and libplacebo, liblcms2-2.dll is MIT, the GPL term covers the fast_float plugin, which is liblcms2_fast_float-2.dll and not bundled
+lua51.dll	spdx:MIT	LuaJIT for mpv, which the osc option the apps set needs
+libass-9.dll	spdx:ISC	subtitle renderer, required by mpv
+libfribidi-0.dll	spdx:LGPL-2.1-or-later	needed by libass
+libunibreak-7.dll	spdx:Zlib	needed by libass
+libfontconfig-1.dll	custom	needed by libass, fontconfig's licence is MIT style, the text is in THIRD-PARTY-LICENSES
+libexpat-1.dll	spdx:MIT	needed by fontconfig
+libfreetype-6.dll	spdx:GPL-2.0-or-later OR FTL	needed by libass, used under the FreeType License
+libpng16-16.dll	custom	needed by freetype, libpng licence, the text is in THIRD-PARTY-LICENSES
+libbz2-1.dll	custom	needed by freetype, bzip2 licence, BSD style, the text is in THIRD-PARTY-LICENSES
+libbrotlidec.dll	spdx:MIT	needed by freetype
+libbrotlicommon.dll	spdx:MIT	needed by libbrotlidec
+libharfbuzz-0.dll	spdx:MIT	needed by libass and freetype
+libgraphite2.dll	spdx:LGPL-2.1-or-later	needed by harfbuzz
+libglib-2.0-0.dll	spdx:LGPL-2.1-or-later	needed by harfbuzz
+libpcre2-8-0.dll	spdx:BSD-3-Clause	needed by glib
+libintl-8.dll	spdx:GPL-3.0-or-later AND LGPL-2.1-or-later	needed by glib, libintl is LGPL-2.1-or-later, the GPL term covers the gettext tools, which are not bundled
+libiconv-2.dll	spdx:LGPL-2.1-or-later  documentation:spdx:GPL-3.0-or-later	needed by libass and libintl, the library is LGPL-2.1-or-later, the GPL entry is the documentation
+libgcc_s_seh-1.dll	spdx:GPL-3.0-or-later WITH GCC-exception-3.1 AND GFDL-1.3-or-later	GCC runtime, the runtime library exception covers linking it, the GFDL covers the manuals
+libstdc++-6.dll	spdx:GPL-3.0-or-later WITH GCC-exception-3.1 AND GFDL-1.3-or-later	GCC runtime, the runtime library exception covers linking it, the GFDL covers the manuals
+libwinpthread-1.dll	spdx:MIT AND BSD-3-Clause-Clear	POSIX threads for the GCC runtime

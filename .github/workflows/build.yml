@@ -1,0 +1,103 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            container: ubuntu:24.04
+            shell: bash
+          - os: macos-15
+            container: ''
+            shell: bash
+          - os: windows-2025
+            container: ''
+            shell: msys2 {0}
+    runs-on: ${{ matrix.os }}
+    # the same image as a local podman build, so the closure matches the reviewed allow list
+    container: ${{ matrix.container }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      # the bare image has no git, and the recipe asset lists files through git
+      - name: Install git (Linux)
+        if: runner.os == 'Linux'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+
+      - uses: actions/checkout@v4
+
+      - name: Set up MSYS2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+
+      - name: Install build dependencies
+        run: ./build.sh deps
+
+      - name: Fetch sources at the pins
+        run: ./build.sh fetch
+
+      - name: Build
+        run: ./build.sh libdisplay_info libplacebo ffmpeg_configure ffmpeg_build mpv_configure mpv_build stage
+
+      - name: Check licences of the link closure
+        run: ./build.sh licences
+
+      - name: Smoke test
+        run: ./build.sh smoke
+
+      - name: Package
+        run: ./build.sh package
+
+      - name: Source asset
+        if: runner.os == 'Linux'
+        run: ./build.sh sources
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-mpv-${{ runner.os }}
+          path: build/dist/*
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          cd dist
+          sha256sum ffmpeg-mpv-* THIRD-PARTY-LICENSES-* > SHA256SUMS
+          cat SHA256SUMS
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" \
+            --notes "LGPL FFmpeg and libmpv for Linux x86_64, macOS arm64 and Windows x86_64. Sources and recipe in ffmpeg-mpv-sources.tar." \
+            ./*

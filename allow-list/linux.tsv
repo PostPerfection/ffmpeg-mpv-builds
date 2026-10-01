@@ -1,0 +1,74 @@
+# soname	licence	why it is allowed
+libavcodec.so.62	LGPL-2.1-or-later	built here from FFmpeg without --enable-gpl, --enable-version3 or --enable-nonfree, the smoke test reads avcodec_license()
+libavdevice.so.62	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavfilter.so.11	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavformat.so.62	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libavutil.so.60	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libswresample.so.6	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libswscale.so.9	LGPL-2.1-or-later	built here from FFmpeg, same configure line as libavcodec
+libmpv.so.2	LGPL-2.1-or-later	built here from mpv with -Dgpl=false and every optional feature off unless listed, the smoke test reads mpv-configuration
+libplacebo.so.360	LGPL-2.1-or-later	built here from libplacebo, bundled because its soname is its API version
+libdisplay-info.so.3	MIT	built here from libdisplay-info for mpv's drm support, bundled because its soname differs between distros
+ld-linux-x86-64.so.2	LGPL-2.1-or-later	glibc, system library
+libc.so.6	LGPL-2.1-or-later	glibc, system library
+libm.so.6	LGPL-2.1-or-later	glibc, system library
+libgcc_s.so.1	GPL-3.0-or-later WITH GCC-exception-3.1	GCC runtime, the runtime library exception covers linking it, needed by libplacebo
+libstdc++.so.6	GPL-3.0-or-later WITH GCC-exception-3.1	GCC runtime, the runtime library exception covers linking it, needed by libplacebo
+libdav1d.so.7	BSD-2-Clause	AV1 decoder for FFmpeg
+libzimg.so.2	WTFPL	scaler for FFmpeg zscale and mpv, the GPL-3+ in its Debian copyright covers autoconf files
+libz.so.1	Zlib	zlib for FFmpeg and mpv
+libva.so.2	MIT	VA-API for FFmpeg and mpv, the GPL-2+ in its Debian copyright covers test programs
+libva-drm.so.2	MIT	VA-API drm display for FFmpeg and mpv
+libva-wayland.so.2	MIT	VA-API wayland display for mpv
+libdrm.so.2	MIT	drm for FFmpeg and mpv
+libass.so.9	ISC	subtitle renderer, required by mpv, the GPL-2+ in its Debian copyright covers files not in the library
+liblcms2.so.2	MIT	colour management for mpv and libplacebo, the GPL-3 in its Debian copyright is the fast_float plugin, which liblcms2.so.2 does not contain
+libasound.so.2	LGPL-2.1-or-later	ALSA audio output for mpv
+libpulse.so.0	LGPL-2.1-or-later	PulseAudio output for mpv, the GPL-2+ in its Debian copyright covers the daemon and modules
+libpipewire-0.3.so.0	MIT	PipeWire audio output for mpv
+libwayland-client.so.0	MIT	wayland display for mpv's VA-API interop
+libwayland-cursor.so.0	MIT	required by mpv's wayland support
+libxkbcommon.so.0	MIT	required by mpv's wayland support
+libEGL.so.1	MIT	glvnd EGL for mpv's dmabuf interop, the GPL entries in its Debian copyright cover build files
+libGLdispatch.so.0	MIT	glvnd, needed by libEGL
+libfreetype.so.6	FTL OR GPL-2.0-or-later	needed by libass, used under the FreeType License
+libfontconfig.so.1	HPND-sell-variant	needed by libass
+libharfbuzz.so.0	MIT	needed by libass
+libfribidi.so.0	LGPL-2.1-or-later	needed by libass
+libunibreak.so.5	Zlib	needed by libass
+libgraphite2.so.3	LGPL-2.1-or-later OR MPL-1.1 OR GPL-2.0-or-later	needed by harfbuzz, used under the LGPL
+libglib-2.0.so.0	LGPL-2.1-or-later	needed by harfbuzz
+libpcre2-8.so.0	BSD-3-Clause	needed by glib
+libpng16.so.16	libpng-2.0	needed by freetype
+libbrotlicommon.so.1	MIT	needed by freetype
+libbrotlidec.so.1	MIT	needed by freetype
+libbz2.so.1.0	bzip2-1.0.6	needed by freetype, the GPL-2 in its Debian copyright covers packaging
+libexpat.so.1	MIT	needed by fontconfig
+libffi.so.8	MIT	needed by glib through libpipewire, the GPL entries in its Debian copyright cover build and test files
+libpulsecommon-16.1.so	LGPL-2.1-or-later	PulseAudio client internals, needed by libpulse
+libsndfile.so.1	LGPL-2.1-or-later	needed by libpulsecommon
+libFLAC.so.12	BSD-3-Clause	needed by libsndfile, the GPL entries in its Debian copyright cover the flac tools
+libogg.so.0	BSD-3-Clause	needed by libsndfile
+libvorbis.so.0	BSD-3-Clause	needed by libsndfile
+libvorbisenc.so.2	BSD-3-Clause	needed by libsndfile
+libopus.so.0	BSD-3-Clause	needed by libsndfile
+libmpg123.so.0	LGPL-2.1-only	needed by libsndfile
+libmp3lame.so.0	LGPL-2.0-or-later	needed by libsndfile
+libasyncns.so.0	LGPL-2.1-or-later	needed by libpulsecommon
+libdbus-1.so.3	AFL-2.1 OR GPL-2.0-or-later	needed by libpulsecommon, used under the Academic Free License
+libsystemd.so.0	LGPL-2.1-or-later	needed by libpulsecommon and libdbus
+libapparmor.so.1	LGPL-2.1-only	needed by libdbus
+libcap.so.2	BSD-3-Clause OR GPL-2.0-only	needed by libsystemd, used under BSD-3-Clause
+libgcrypt.so.20	LGPL-2.1-or-later	needed by libsystemd
+libgpg-error.so.0	LGPL-2.1-or-later	needed by libgcrypt, the GPL-3+ in its Debian copyright covers the tools
+liblz4.so.1	BSD-2-Clause	needed by libsystemd, the GPL-2+ covers the lz4 command
+liblzma.so.5	0BSD	needed by libsystemd, liblzma is public domain or 0BSD, the GPL entries cover xz scripts
+libzstd.so.1	BSD-3-Clause OR GPL-2.0-only	needed by libsystemd, used under BSD-3-Clause
+libX11.so.6	MIT	needed by libpulsecommon
+libX11-xcb.so.1	MIT	needed by libpulsecommon
+libxcb.so.1	MIT	needed by libX11
+libXau.so.6	MIT	needed by libxcb
+libXdmcp.so.6	MIT	needed by libxcb
+libbsd.so.0	BSD-3-Clause	needed by libXdmcp
+libmd.so.0	BSD-2-Clause	needed by libbsd
+libluajit-5.1.so.2	MIT	Lua for mpv, which the osc option the apps set needs, copied from the Ubuntu package because not every distro installs it
