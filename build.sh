@@ -154,7 +154,7 @@ libplacebo() {
 ffmpeg_platform_flags() {
     case "$PLATFORM" in
         linux) echo --enable-pthreads --enable-iconv --enable-ffnvcodec --enable-cuvid --enable-nvdec --enable-vaapi --enable-libdrm ;;
-        macos) echo --enable-pthreads --enable-iconv --enable-videotoolbox ;;
+        macos) echo --enable-pthreads --enable-iconv --extra-libs=-liconv --enable-videotoolbox ;;
         windows) echo --enable-w32threads --enable-ffnvcodec --enable-nvdec --enable-d3d11va ;;
     esac
 }
@@ -364,7 +364,7 @@ sources() {
     source_tarball "mpv-$MPV_TAG" "$SOURCES/mpv"
     source_tarball "libplacebo-$LIBPLACEBO_TAG" "$SOURCES/libplacebo"
     source_tarball "libdisplay-info-$LIBDISPLAY_INFO_TAG" "$SOURCES/libdisplay-info"
-    git -C "$ROOT" ls-files -co --exclude-standard -z \
+    git -c safe.directory="$ROOT" -C "$ROOT" ls-files -co --exclude-standard -z \
         | tar -C "$ROOT" --null -T - --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
             --transform 's|^|ffmpeg-mpv-builds/|' -cJf "$WORK/sources/ffmpeg-mpv-builds-recipe.tar.xz"
     tar -C "$WORK" --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \

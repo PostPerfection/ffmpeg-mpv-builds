@@ -150,16 +150,16 @@ def bundle_windows(stage, origins, package_prefix):
 def read_origins(path):
     if not path or not path.exists():
         return {}
-    return dict(line.split("\t", 1) for line in path.read_text().splitlines() if line)
+    return dict(line.split("\t", 1) for line in path.read_text(encoding="utf-8").splitlines() if line)
 
 
 def write_origins(path, origins):
-    path.write_text("".join(f"{name}\t{origin}\n" for name, origin in sorted(origins.items())))
+    path.write_text("".join(f"{name}\t{origin}\n" for name, origin in sorted(origins.items())), encoding="utf-8")
 
 
 def read_allow_list(path):
     rows = {}
-    for line in path.read_text().splitlines():
+    for line in path.read_text(encoding="utf-8").splitlines():
         if not line or line.startswith("#"):
             continue
         soname, licence, reason = line.split("\t")
@@ -320,6 +320,14 @@ def check(arguments):
     write_third_party_licences(arguments, platform, stage, names, staged, allow_list, allow_keys, bundled_packages, system_libraries)
 
 
+def licence_text(path):
+    # some packages ship their licence in latin-1
+    try:
+        return path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return path.read_text(encoding="latin-1")
+
+
 def write_third_party_licences(arguments, platform, stage, names, staged, allow_list, allow_keys, bundled_packages, system_libraries):
     components = dict(component.split("=", 1) for component in arguments.component)
     extra_licence_files = dict(item.split("=", 1) for item in arguments.licence_file)
@@ -328,7 +336,7 @@ def write_third_party_licences(arguments, platform, stage, names, staged, allow_
         libraries = sorted(name for name in names if name in staged and built_component(name) == component)
         if not libraries:
             continue
-        configure_line = (arguments.configure_lines / component).read_text().strip()
+        configure_line = (arguments.configure_lines / component).read_text(encoding="utf-8").strip()
         licences = sorted({allow_list[allow_keys[name]][0] for name in libraries})
         sections += [
             f"{component} {version}",
@@ -348,8 +356,8 @@ def write_third_party_licences(arguments, platform, stage, names, staged, allow_
     for name, (package, _, licence_files) in sorted(bundled_packages.items()):
         licence_texts += [(f"{name} ({package}): {path.name}", path) for path in licence_files]
     for title, path in licence_texts:
-        sections += ["", title, "-" * len(title), path.read_text(errors="replace")]
-    (stage / "THIRD-PARTY-LICENSES").write_text("\n".join(sections))
+        sections += ["", title, "-" * len(title), licence_text(path)]
+    (stage / "THIRD-PARTY-LICENSES").write_text("\n".join(sections), encoding="utf-8")
 
 
 def main():
